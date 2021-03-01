@@ -48,7 +48,7 @@ def func():
     #print(normalized_energy_progression)
 
 
-    cleaned_scales = data_clean(scale, sr, frame_size, hop_size, 0.01, 7500)
+    cleaned_scales = data_clean(scale, sr, frame_size, hop_size, 0.4, 7500)
     #print(cleaned_scales)
     scales = np.array([])
     for i, scale in enumerate(cleaned_scales):
@@ -57,8 +57,8 @@ def func():
     enery_progression = librosa.feature.rms(y=scales, frame_length=frame_size, hop_length=hop_size)
     enery_progression = np.array(enery_progression[0])
     normalized_energy_progression = preproc.normalize([enery_progression], norm='max')
-    #plt.plot(np.arange(len(normalized_energy_progression[0])), normalized_energy_progression[0])
-    #plt.show()
+    plt.plot(np.arange(len(normalized_energy_progression[0])), normalized_energy_progression[0])
+    plt.show()
 
     stft_scale = librosa.stft(scales, n_fft=frame_size, hop_length=hop_size)
     amplitude_stft_scale = np.abs(stft_scale)**2
@@ -66,8 +66,8 @@ def func():
     #
     plt.figure(figsize=(15, 10))
     librosa.display.specshow(decibal_stft_scale, sr=sr, hop_length=hop_size, x_axis="time", y_axis="linear")
-    plt.colorbar(format="%+2.f")
-    plt.show()
+    #plt.colorbar(format="%+2.f")
+    #plt.show()
 
     save_scale_as_wav(scales, sr, ".\\", "cleaned.wav")
 
@@ -113,7 +113,7 @@ def data_clean(scale, sr, frame_length, hop_length, threshold, duration_filter):
 
         cleaned_scale_data_intervals.append((start_scale_index, end_scale_index))
 
-    print(cleaned_scale_data_intervals)
+    #print(cleaned_scale_data_intervals)
     #### Data indexes to cleaned scale
     for scale_interval in cleaned_scale_data_intervals:
         if scale_interval[1]-scale_interval[0] > duration_filter:
@@ -163,10 +163,11 @@ def main():
                 continue
 
             print(str(i) + ": " + data_point + " cleaned", str(num_of_processedfiles) + " cleaned files generated")
+            i = i + 1
 
     with open(".\errors.txt", 'w') as error_logs_file:
         json.dump(error_logs, error_logs_file)
 
 if __name__=="__main__":
-    func()
-    #main()
+    #func()
+    main()
